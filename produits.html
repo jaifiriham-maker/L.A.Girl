@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>L.A. Girl | Produits &amp; Contact</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/><link href="style.css" rel="stylesheet"/></head><body><header class="container-fluid"><h1 class="logo">L.A. Girl ♡</h1><nav class="d-flex flex-wrap gap-3"><a href="index.html">Accueil</a><a aria-current="page" href="#produits">Produits</a><a href="index.html#apropos">À propos</a><a href="#contact">Contact</a></nav><button class="cart-trigger" id="openCart" type="button">🛍️ Panier <span id="cartCount">0</span></button></header><section class="products container-fluid" id="produits"><h2>♡ Nos Produits Phares ♡</h2><p>Les incontournables de L.A. Girl</p><div class="row g-4"><div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Palette" src="assets/product1.png"/><h3>Pro.Color Eyeshadow Palette</h3><p>Palette de maquillage</p><span>189 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Foundation" src="assets/product2.png"/><h3>Pro.Coverage Foundation</h3><p>Fond de teint</p><span>169 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Concealer" src="assets/product3.png"/><h3>Pro.Conceal HD</h3><p>Anti-cernes</p><span>139 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Lipstick" src="assets/product4.png"/><h3>Matte Flat Velvet Lipstick</h3><p>Rouge à lèvres</p><span>119 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Lip Liner" src="assets/product5.png"/><h3>L.A. Girl Lip Liner</h3><p>Crayon à lèvres</p><span>89 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Mascara" src="assets/product6.png"/><h3>Lash Sensational Mascara</h3><p>Mascara noir</p><span>129 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Highlighter" src="assets/product7.png"/><h3>Strobe Lite Highlighter</h3><p>Illuminateur</p><span>119 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Bronzer" src="assets/product8.png"/><h3>Sun Kissed Bronzer</h3><p>Poudre bronzante</p><span>109 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div>
+<div class="col-12 col-sm-6 col-lg-4"><div class="card h-100"><img alt="Brush Set" src="assets/product9.png"/><h3>Makeup Brush Set</h3><p>Set de pinceaux</p><span>249 MAD</span><button class="add-cart" type="button">Ajouter au panier</button></div></div></div><nav aria-label="Pages du catalogue" class="catalog-pages"><button aria-current="page" class="page-btn active" data-page="1" type="button">1</button><button class="page-btn" data-page="2" type="button">2</button></nav></section><footer id="contact"><h2>Contact ♡</h2><p>Une question sur notre collection ?</p><p>Téléphone : <a href="tel:0600000000">0600-000000</a></p><p><small>Projet éducatif 2026</small></p></footer>
+<dialog aria-label="Mon panier" id="cartDialog">
+<div class="cart-head"><h2>Mon panier ♡</h2><button aria-label="Fermer" id="closeCart" type="button">✕</button></div>
+<div id="cartItems"><p>Votre panier est vide.</p></div>
+<div class="cart-total">Total : <strong id="cartTotal">0 MAD</strong></div>
+<button id="clearCart" type="button">Vider le panier</button>
+<button class="confirm-order" id="confirmOrder" type="button">Confirmer ma commande</button>
+<p class="order-confirmation" hidden="" id="orderConfirmation"></p>
+<p class="cart-note">Démonstration uniquement : aucune commande réelle.</p>
+</dialog>
+<script>
+const cart = {};
+const dialog = document.getElementById("cartDialog");
+const money = n => `${n} MAD`;
+document.getElementById("openCart").addEventListener("click", () => dialog.showModal());
+document.getElementById("closeCart").addEventListener("click", () => dialog.close());
+dialog.addEventListener("click", e => { if (e.target === dialog) dialog.close(); });
+document.querySelectorAll(".products .card").forEach((card, id) => {
+  const name = card.querySelector("h3").textContent.trim();
+  const price = Number(card.querySelector("span").textContent.match(/[0-9]+/)[0]);
+  const img = card.querySelector("img").getAttribute("src");
+  card.querySelector(".add-cart").addEventListener("click", () => {
+    if (!cart[id]) cart[id] = {name, price, img, qty: 0};
+    cart[id].qty++;
+    renderCart();
+    if (!dialog.open) dialog.showModal();
+  });
+});
+function renderCart() {
+  const items = document.getElementById("cartItems");
+  const entries = Object.entries(cart);
+  items.replaceChildren();
+  if (!entries.length) {
+    const empty = document.createElement("p");
+    empty.textContent = "Votre panier est vide.";
+    items.append(empty);
+  }
+  entries.forEach(([id, item]) => {
+    const line = document.createElement("div"); line.className = "cart-line";
+    const img = document.createElement("img"); img.src = item.img; img.alt = item.name;
+    const info = document.createElement("div"); info.className = "cart-line-info";
+    const title = document.createElement("strong"); title.textContent = item.name;
+    const subtotal = document.createElement("small"); subtotal.textContent = money(item.price * item.qty);
+    info.append(title, subtotal);
+    const qty = document.createElement("div"); qty.className = "cart-qty";
+    const minus = document.createElement("button"); minus.textContent = "−"; minus.setAttribute("aria-label", "Diminuer " + item.name);
+    const amount = document.createElement("span"); amount.textContent = item.qty;
+    const plus = document.createElement("button"); plus.textContent = "+"; plus.setAttribute("aria-label", "Augmenter " + item.name);
+    minus.addEventListener("click", () => { item.qty--; if (!item.qty) delete cart[id]; renderCart(); });
+    plus.addEventListener("click", () => { item.qty++; renderCart(); });
+    qty.append(minus, amount, plus); line.append(img, info, qty); items.append(line);
+  });
+  document.getElementById("cartCount").textContent = entries.reduce((n,[,i]) => n+i.qty, 0);
+  document.getElementById("cartTotal").textContent = money(entries.reduce((n,[,i]) => n+i.price*i.qty, 0));
+}
+document.getElementById("confirmOrder").addEventListener("click", () => {
+  const entries = Object.values(cart);
+  const message = document.getElementById("orderConfirmation");
+  message.hidden = false;
+  if (!entries.length) {
+    message.textContent = "Votre panier est vide ! Ajoutez un produit avant de confirmer.";
+    return;
+  }
+  const count = entries.reduce((sum, item) => sum + item.qty, 0);
+  const total = entries.reduce((sum, item) => sum + item.price * item.qty, 0);
+  message.textContent = `Merci pour votre commande ! ♡ ${count} produit(s) — Total : ${money(total)}. Confirmation de démonstration : aucune commande réelle n’a été envoyée.`;
+});
+document.getElementById("clearCart").addEventListener("click", () => {
+  Object.keys(cart).forEach(id => delete cart[id]);
+  document.getElementById("orderConfirmation").hidden = true;
+  renderCart();
+});
+renderCart();
+
+
+const productCards = [...document.querySelectorAll('.products .row > div')];
+const pageButtons = [...document.querySelectorAll('.page-btn')];
+function showCatalogPage(page) {
+ productCards.forEach((card,i) => { card.hidden = page === 1 ? i >= 5 : i < 5; card.style.display = card.hidden ? 'none' : ''; });
+ pageButtons.forEach(button => { const selected = Number(button.dataset.page) === page; button.classList.toggle('active',selected); if(selected) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current'); });
+}
+pageButtons.forEach(button => button.addEventListener('click',()=>{showCatalogPage(Number(button.dataset.page)); document.getElementById('produits').scrollIntoView({behavior:'smooth'});}));
+showCatalogPage(1);
+</script></body></html>

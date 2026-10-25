@@ -1,0 +1,1 @@
+Ouvrir index.html : accueil. Cliquer sur Produits pour ouvrir produits.html (catalogue en 2 pages et Contact). Garder tous les fichiers et le dossier assets ensemble. Commandes de démonstration uniquement.
